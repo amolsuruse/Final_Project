@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+<title>Report Summary</title>
+{% load staticfiles %}
+{% csrf_token %}
+
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+
+<link rel="stylesheet" type="text/css" href="{% static 'assets/styles/new/bootstrap.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'assets/styles/new/font-awesome.min.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'assets/styles/new/ionicons.min.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'assets/styles/new/jquery.steps.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'assets/styles/new/bootstrap-table.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'assets/styles/new/style.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'assets/styles/new/skin-black.css' %}" />
+
+<script>
+	//var CHART_REPORT_DICT = {{json_list1| safe}};
+</script>
+
+</head>
+
+<body class="skin-black sidebar-mini sidebar-collapse fixed">
+
+<div class="wrapper" >
+
+<header class="main-header">
+			
+		</header>
+
+<div class="content-wrapper">
+  <section class="content-header">
+    <h1 class="col-sm-2">ReportSummary</h1>
+    <div class="col-sm-10" style="padding-top:0px">
+      <div class="form-group ">
+        <div class="col-sm-2" style="padding-top:5px;padding-bottom:5px;">
+           <select class="form-control workspace_list" id="sel" name="serchtype" data-toggle="tooltip" data-placement="top" data-original-title="Region">
+          </select>
+        </div>
+		<div class="col-sm-3" style="padding-top:5px;padding-bottom:5px;">
+			<select class="form-control reportsummaryname_list" id="rsnl" name="rsnltype" data-toggle="tooltip" data-placement="top" data-original-title="Temprature Type">
+									
+									</select>
+								</div>
+		<div class="col-sm-5" style="padding-top:0px;padding-bottom:0px;">
+			<!--<label class="col-sm-3 control-label">Date Range </label>-->
+			<div class="col-md-6" style="padding-top:5px;padding-bottom:5px;">
+				
+								</div>
+			<!--<label class="col-sm-2 control-label">-</label>-->
+			<div class="col-md-6" style="padding-top:5px;padding-bottom:5px;">
+				
+								</div>
+							</div>
+		<div class="col-sm-1" style="padding-top:5px;padding-bottom:5px;">
+			<button id="clearselections" class="btn btn-default fa fa-refresh col-sm-12" data-toggle="tooltip" data-placement="bottom" data-original-title="Refresh"></button>
+			
+		</div>
+		<div class="col-sm-1" style="padding-top:5px;padding-bottom:5px;">
+			<button id="submitselections" class="btn btn-primary fa fa-play col-sm-12" data-toggle="tooltip" data-placement="bottom" data-original-title="Load Data"></button>
+						</div>
+									</div>
+								</div>
+  </section><br>
+
+  <section class="content-header" id="adfs2" style="margin:5px 0px 0px 0px;padding:5px 0px 0px 0px;" >
+		<div class="col-sm-12" style="padding-top:0px">
+			<div class="form-group ">
+				<div class="col-sm-12">
+					<div id="selections" style="display:none;background-color:#d0d0d0;overflow:hidden;max-height:110px;padding:3px;border-style:none;border-color:#000000;border-width:0.5px;">
+							</div>
+						</div>
+					  </div>
+					</div>
+  </section><br>
+
+  <section class="content">
+	<div class="col-sm-12" style="padding-top:10px">
+		<div class="form-group ">
+			<div class="row">
+			<div class="col-md-12">
+						<div class="row">
+							<div class="col-md-4">
+								<select class="form-control" id="coll_pie" name="coll_pie" data-toggle="tooltip" data-placement="top" data-original-title="KPI">
+								</select>
+								<p class="text-center" id="pieChartHead" ondblclick="getChartHeadingModal('#pieChartHead','pie');"> <strong>No Data / Config Not Defined to Show Pie Chart </strong></p>
+								<div class="chart" id="pieCanvas">
+									<!--<canvas id="pieChart" height="120"></canvas>-->
+								</div>
+							</div>
+							<div class="col-md-4">
+								<select class="form-control" id="coll_bar" name="coll_bar" data-toggle="tooltip" data-placement="top" data-original-title="KIP">
+								</select>
+
+								<p class="text-center" id="barChartHead" ondblclick="getChartHeadingModal('#barChartHead','bar');"> <strong>No Data / Config Not Defined to Show Bar Chart</strong></p>
+								<div class="chart" id="barCanvas">
+								<!--<canvas id="barChart" height="120"></canvas>-->
+								</div>
+							</div>
+							<div class="col-md-4">
+							<select class="form-control" id="coll_line" name="coll_line" data-toggle="tooltip" data-placement="top" data-original-title="KPI">
+								</select>
+
+								<p class="text-center" id="serverChartHead" ondblclick="getChartHeadingModal('#serverChartHead','line');"> <strong>No Data / Config Not Defined to Show Line Chart</strong></p>
+								<div class="chart" id="serverCanvas">
+								<!--<canvas id="serverChart" height="120"></canvas>-->
+								</div>
+							</div>
+						</div>
+					</div>
+			</div>
+
+		</div>
+	</div>
+	<div class="col-sm-12" style="padding-top:10px">
+		<div class="form-group ">
+			<div class="row">
+							<div class="col-md-12">
+								<table id="reportsummarytype" class="table table-striped" data-toolbar="#toolbar" >
+									{% csrf_token %}
+								</table>
+							</div>
+				<div class="col-md-12">
+						<div id="rsummary_pager" class="pager transparent"></div>
+					</div>
+			</div>
+		</div>
+	</div>
+  </section>
+</div>
+
+<footer class="main-footer">
+   <center><strong>Developed By AmolS.</strong> All rights reserved.</center>
+</footer>
+
+
+</div>
+
+<!--ALL JAVASCRIPT LIBRARIES START-->
+  <script type="text/javascript" src="{% static 'assets/scripts/jquery/jquery-2.1.4.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'assets/scripts/bootstrap/bootstrap.min.js' %}" ></script>
+  <script type="text/javascript" src="{% static 'assets/scripts/bootstrap/bootstrap-table.js' %}" ></script>
+  <script type="text/javascript" src="{% static 'assets/scripts/chartjs/Chart.js' %}" ></script>
+  <script type="text/javascript" src="{% static 'assets/scripts/jquery/jquery.blockUI.js' %}"></script>
+  <script type="text/javascript" src="{% static 'assets/scripts/xfmerFramework.js' %}" ></script>
+
+<script type="text/javascript">
+
+	
+	#reportsummarytype{
+		font-size:12px;
+	}
+	.fixed-table-body{height:300px ! important;}
+
+	.tag {
+	  font-size: 12px;
+	  padding: .3em .4em .4em;
+	  margin: 0.1em .1em;
+	  float: left;
+	}
+
+	.tag a {
+	  color: #bbb;
+	  cursor: pointer;
+	  opacity: 0.6;
+	}
+
+	.tag a:hover {
+	  opacity: 1.0
+	}
+
+	.tag .remove {
+	  vertical-align: bottom;
+	  top: 0;
+	}
+
+	.tag a {
+	  margin: 0 0 0 .3em;
+	}
+
+	.tag a .glyphicon-white {
+	  color: #fff;
+	  margin-bottom: 2px;
+	}
+
+	.txtAFCol {
+		display: block;
+		width: 100%;
+		height: 30px;
+		padding: 6px 12px;
+		margin:2px 2px;
+		font-size: 11px;
+		font-weight: normal;
+		line-height: 1.428571429;
+		color: #555;
+		background-color: #fff;
+		background-image: none;
+		border: 1px solid #ccc;
+		border-radius: 4px;
+		-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+		box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+		-webkit-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+		transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+	}
+
+</style>
+</body>
+</html>
